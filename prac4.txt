@@ -1,0 +1,28 @@
+import requests
+from bs4 import BeautifulSoup
+ 
+import nltk
+from nltk.corpus import stopwords
+#: Demonstrate Text Mining and Webpage Pre-processing using meta information from the web pages (Local/Online)
+from nltk.tokenize import word_tokenize from nltk.stem import WordNetLemmatizer nltk.download('punkt') nltk.download('stopwords') nltk.download('wordnet')
+url = https://www.nextgenpixel.co.in/’ response = requests.get(url)
+if response.status_code == 200: html_content = response.text # Parse the HTML content
+soup = BeautifulSoup(html_content, 'html.parser') # Extract the title
+title = soup.title.string if soup.title else 'No title' # Extract meta description
+description = soup.find('meta', attrs={'name': 'description'}) description = description['content'] if description else 'No description' # Extract meta keywords
+keywords = soup.find('meta', attrs={'name': 'keywords'}) keywords = keywords['content'] if keywords else 'No keywords' print(f"Title: {title}")
+print(f"Description: {description}") print(f"Keywords: {keywords}")
+# Combine the title, description, and keywords into a single text text = f"{title} {description} {keywords}"
+# Tokenize the text
+tokens = word_tokenize(text) # Convert to lower case
+tokens = [token.lower() for token in tokens] # Remove stopwords
+stop_words = set(stopwords.words('english'))
+ 
+tokens = [token for token in tokens if token not in stop_words] # Lemmatize the tokens
+lemmatizer = WordNetLemmatizer()
+tokens = [lemmatizer.lemmatize(token) for token in tokens] # Join tokens back into a string
+processed_text = ' '.join(tokens)
+
+
+print(f"Processed Text: {processed_text}") else:
+print(f"Failed to retrieve webpage. Status code: {response.status_code}")

@@ -1,0 +1,43 @@
+#focused Crawler
+import requests
+from bs4 import BeautifulSoup from collections import deque
+keywords = ["Python", "web scraping", "data science"]
+seed_urls = ["https://www.python.org", "https://www.datasciencecentral.com", "https://www.scrapinghub.com"]
+
+# Function to fetch web pages def fetch_page(url):
+try:
+response = requests.get(url) response.raise_for_status() return response.text
+except requests.RequestException as e: print(f"Error fetching {url}: {e}") return None
+
+# Function to parse HTML content def parse_page(html_content):
+soup = BeautifulSoup(html_content, 'html.parser') return soup
+
+# Function to search for keywords in the content def search_keywords(soup, keywords):
+text = soup.get_text()
+found_keywords = {keyword: text.lower().count(keyword.lower()) for keyword in keywords} return found_keywords
+
+# Function to extract links from the page def extract_links(soup, base_url):
+links = set()
+for link in soup.find_all('a', href=True): url = link['href']
+if url.startswith('http'): links.add(url)
+elif url.startswith('/'): links.add(requests.compat.urljoin(base_url, url))
+return links
+
+# Function to display the results
+def display_results(url, found_keywords): print(f"Results for {url}:")
+for keyword, count in found_keywords.items(): print(f" {keyword}: {count}")
+print()
+
+# Focused crawler implementation
+ 
+def focused_crawler(seed_urls, keywords, max_pages=20): crawled_urls = set()
+urls_to_crawl = deque(seed_urls)
+while urls_to_crawl and len(crawled_urls) < max_pages: url = urls_to_crawl.popleft()
+if url in crawled_urls: continue
+html_content = fetch_page(url) if not html_content:
+continue
+soup = parse_page(html_content)
+found_keywords = search_keywords(soup, keywords) display_results(url, found_keywords)
+if any(count > 0 for count in found_keywords.values()): new_links = extract_links(soup, url) urls_to_crawl.extend(new_links - crawled_urls)
+crawled_urls.add(url) focused_crawler(seed_urls, keywords)
+

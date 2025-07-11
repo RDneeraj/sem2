@@ -1,0 +1,22 @@
+#Develop a basic crawler for the web search for user defined keywords.
+import requests
+from bs4 import BeautifulSoup
+keywords = ["Python", "web scraping", "data science"] def fetch_page(url):
+try:
+response = requests.get(url) response.raise_for_status()
+ 
+return response.text
+except requests.RequestException as e: print(f"Error fetching {url}: {e}") return None
+def parse_page(html_content):
+soup = BeautifulSoup(html_content, 'html.parser') return soup
+def search_keywords(soup, keywords): text = soup.get_text()
+found_keywords = {keyword: text.lower().count(keyword.lower()) for keyword in keywords} return found_keywords
+def display_results(url, found_keywords): print(f"Results for {url}:")
+for keyword, count in found_keywords.items(): print(f" {keyword}: {count}")
+print() urls = [
+"https://www.python.org", "https://www.datasciencecentral.com", "https://www.scrapinghub.com"
+]
+for url in urls:
+html_content = fetch_page(url) if html_content:
+soup = parse_page(html_content)
+found_keywords = search_keywords(soup, keywords) display_results(url, found_keywords)

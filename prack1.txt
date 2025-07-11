@@ -1,0 +1,17 @@
+#Scrape an online Social Media Site for Data. Use python to scrape information from twitter.
+import tweepy
+consumer_key = 'hnFPOh0SIEZ3neOavSHPVCcB3'
+consumer_secret = 'jtbVappjoePQyq7IK6ZRsQtrN5uN5VAp5VWbfAKzbyoUaIVoOX' 
+access_token = '1798945542866911232-knq5sXP9L2gB4IoB3ogwZKIekVTUkf' 
+access_token_secret = 'GrnLyzwO44ON7UCt8IR9Ze2BeC1aUWtfiBDoKTL80b9bh'
+ 
+auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret, access_token, access_token_secret) 
+api = tweepy.API(auth)
+search_words = "Eminem" # replace with your search term date_since = "2023-01-01"
+tweets = tweepy.Cursor(api.search_tweets,q=search_words, lang="en",since_id=date_since).items(100) # Number of tweets to scrape 
+for tweet in tweets:
+   print(f"Tweet by @{tweet.user.screen_name}: {tweet.text}\n") 
+
+with open('tweets.txt', 'w', encoding='utf-8') as f:
+  for tweet in tweets:
+     f.write(f"Tweet by @{tweet.user.screen_name}: {tweet.text}\n\n")

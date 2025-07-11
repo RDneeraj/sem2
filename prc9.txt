@@ -1,0 +1,26 @@
+#Sentiment analysis for reviews 
+import pandas as pd import nltk
+from textblob import TextBlob import matplotlib.pyplot as plt import seaborn as sns nltk.download('punkt')
+data = {
+'review': [
+"I love this product! It works great.",
+"This is the worst purchase I have ever made.", "Not bad, but could be better.",
+"Absolutely fantastic! Highly recommend it.", "Terrible experience, will not buy again.", "Decent quality for the price.",
+"Exceeded my expectations!",
+"Would not recommend this to anyone.", "Satisfactory performance overall.", "I'm very happy with my purchase."
+]
+}
+df = pd.DataFrame(data)
+ 
+def get_sentiment(text): blob = TextBlob(text)
+return blob.sentiment.polarity
+df['sentiment'] = df['review'].apply(get_sentiment) sns.set_style("whitegrid")
+plt.figure(figsize=(10, 6)) sns.histplot(df['sentiment'], bins=10, kde=True) plt.title('Distribution of Sentiment Scores') plt.xlabel('Sentiment Score') plt.ylabel('Frequency')
+plt.show()
+def categorize_sentiment(polarity): if polarity > 0:
+return 'Positive' elif polarity < 0:
+return 'Negative' else:
+return 'Neutral'
+df['sentiment_category'] = df['sentiment'].apply(categorize_sentiment) plt.figure(figsize=(10, 6))
+sns.countplot(x='sentiment_category', data=df, palette='viridis') plt.title('Sentiment Category Distribution') plt.xlabel('Sentiment Category')
+plt.ylabel('Frequency') plt.show()

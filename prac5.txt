@@ -1,0 +1,21 @@
+#Apriori Algorithm
+import pandas as pd
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules data = {
+'Transaction': [1, 2, 3, 4, 5],
+ 
+'Items': [
+['Milk', 'Bread', 'Butter'],
+['Bread', 'Butter'],
+['Milk', 'Bread'],
+['Milk', 'Bread', 'Butter', 'Eggs'], ['Milk', 'Eggs']
+]
+}
+df = pd.DataFrame(data) te = TransactionEncoder()
+te_ary = te.fit_transform(df['Items'])
+df = pd.DataFrame(te_ary, columns=te.columns_) print("One-hot encoded DataFrame:")
+print(df)
+frequent_itemsets = apriori(df, min_support=0.6, use_colnames=True) print("\nFrequent Itemsets:")
+print(frequent_itemsets)
+rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.7) print("\nAssociation Rules:")
+print(rules)

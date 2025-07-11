@@ -1,0 +1,20 @@
+#Page Rank for link analysis using python Create a small set of pages namely page1, page2, page3 and page4 apply random walk on the same
+import numpy as np links = {
+'page1': ['page2', 'page3'],
+'page2': ['page3'],
+ 
+'page3': ['page1'],
+'page4': ['page1', 'page3']
+}
+pages = list(links.keys()) n_pages = len(pages)
+page_rank = {page: 1 / n_pages for page in pages} damping_factor = 0.85
+iterations = 100
+for _ in range(iterations):
+new_page_rank = {page: (1 - damping_factor) / n_pages for page in pages}
+
+
+for page, out_links in links.items():
+share = page_rank[page] / len(out_links) for linked_page in out_links:
+new_page_rank[linked_page] += damping_factor * share page_rank = new_page_rank
+# Output the final PageRank values for page, rank in page_rank.items():
+print(f'{page}: {rank:.4f}')
